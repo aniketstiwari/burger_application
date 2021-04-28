@@ -16,6 +16,8 @@ const OrderSummary = (props) => {
                 {ingredentSummary}
             </ul>
             <p>Continue to Checkout?</p>
+            <button>CANCEL</button>
+            <button>CONTINUE</button>
         </Aux>
     )
 };
