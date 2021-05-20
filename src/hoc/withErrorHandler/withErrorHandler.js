@@ -22,7 +22,14 @@ const withErrorHandler = (WrappedComponent, axios) => {
         state = {
             error: null
         }
-        componentDidMount() {
+
+        //component did mount will only be called once the component is called
+        // below as WrappedComponent. TO fix it change it change ComponentDidMount
+        //to ComponentWillMount. Also, in future ComponentWillMount wont be supported
+        // so instead you can make use of constructor
+        //General idea is we want below codes gets executed as soon as the component
+        //is created
+        UNSAFE_componentWillMount() {
             axios.interceptors.request.use( req => {
                 this.setState({error: null});
                 return req;
