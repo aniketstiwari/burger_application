@@ -29,14 +29,27 @@ const withErrorHandler = (WrappedComponent, axios) => {
         // so instead you can make use of constructor
         //General idea is we want below codes gets executed as soon as the component
         //is created
+
+        //Here we have a problem whenever we will call WillErrorHandler component
+        //with other component then componentWillMount will be called again & again
+        //And we will have old interceptors which will exist in memory or it can leak 
+        // memory. So, we should actually remove the interceptors when this component
+        // get unmounted. To do this we can make use of componentWillUnmount
+        //TO remove interceptors we need to save in the property of class
         UNSAFE_componentWillMount() {
-            axios.interceptors.request.use( req => {
+            this.reqInterceptor = axios.interceptors.request.use( req => {
                 this.setState({error: null});
                 return req;
             });
-            axios.interceptors.response.use(res => res, error => {
+            this.resInterceptor = axios.interceptors.response.use(res => res, error => {
                 this.setState({error: error});
             });
+        }
+
+        componentWillUnmount() {
+            console.log("will Unmount", this.reqInterceptor, this.resInterceptor);
+            axios.interceptors.request.eject(this.reqInterceptor);
+            axios.interceptors.response.eject(this.resInterceptor);
         }
 
         errorConfirmedHandler = () => {
